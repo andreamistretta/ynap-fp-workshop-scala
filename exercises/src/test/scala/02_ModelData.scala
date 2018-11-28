@@ -33,7 +33,9 @@ object ModelData extends SimpleTestSuite {
 
   // Typical sum type in Scala
   sealed trait LightState
-  case class On()  extends LightState
+
+  case class On() extends LightState
+
   case class Off() extends LightState
 
   /*
@@ -50,6 +52,13 @@ object ModelData extends SimpleTestSuite {
    * ADD YOUR CODE HERE INSIDE THE OBJECT
    */
 
+
+  case class Card(value: Int, suits: String)
+  case class Player(name: String, hand: Seq[Card], pile: Seq[Card])
+  case class Table(cards: Seq[Card])
+  case class Deck(cards: Seq[Card])
+  case class Game(deck: Deck, table: Table, player1: Player, player2: Player)
+
   test("represent initial match state") {
     ignore("build the first player w/ 2 of Golds, 5 of Swords and 7 of Clubs")
     ignore("build the second player w/ 1 of Cups, 2 of Clubs and 9 of Golds")
@@ -57,5 +66,6 @@ object ModelData extends SimpleTestSuite {
     ignore("build the deck w/ only 1 of Swords and 10 of Clubs")
     ignore("build the game")
     () // don't delete
+
   }
 }

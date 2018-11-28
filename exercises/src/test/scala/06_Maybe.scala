@@ -16,6 +16,9 @@ object MaybeTests extends SimpleTestSuite {
   /*
    * TODO: remove all nulls
    */
+  sealed trait Maybe[+A]
+  case class Yeah[A](value: A) extends Maybe[A]
+  case class Nope() extends Maybe[Nothing]
 
   case class Qty(value: Int)
 

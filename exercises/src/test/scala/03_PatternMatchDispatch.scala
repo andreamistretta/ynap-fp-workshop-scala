@@ -20,38 +20,39 @@ object PatternMatchDispatch extends SimpleTestSuite {
    *       Keep tests green.
    */
 
-  trait Direction {
-    def turnRight: Direction
-    def turnLeft: Direction
-  }
-  case class N() extends Direction {
-    def turnRight: Direction = E()
-    def turnLeft: Direction  = W()
-  }
-  case class E() extends Direction {
-    def turnRight: Direction = S()
-    def turnLeft: Direction  = N()
-  }
-  case class W() extends Direction {
-    def turnRight: Direction = N()
-    def turnLeft: Direction  = S()
-  }
-  case class S() extends Direction {
-    def turnRight: Direction = W()
-    def turnLeft: Direction  = E()
-  }
+  sealed trait Direction
+  case object N extends Direction
+  case object E extends Direction
+  case object W extends Direction
+  case object S extends Direction
+
+  def turnRight(dir:Direction): Direction =
+    dir match {
+      case N => E
+      case E => S
+      case W => N
+      case S => W
+    }
+
+  def turnLeft(dir:Direction): Direction =
+    dir match {
+      case N => W
+      case E => N
+      case W => S
+      case S => E
+    }
 
   test("turn right") {
-    assertEquals(N().turnRight, E())
-    assertEquals(E().turnRight, S())
-    assertEquals(S().turnRight, W())
-    assertEquals(W().turnRight, N())
+    assertEquals(turnRight(N), E)
+    assertEquals(turnRight(E), S)
+    assertEquals(turnRight(S), W)
+    assertEquals(turnRight(W), N)
   }
 
   test("turn left") {
-    assertEquals(N().turnLeft, W())
-    assertEquals(W().turnLeft, S())
-    assertEquals(S().turnLeft, E())
-    assertEquals(E().turnLeft, N())
+    assertEquals(turnLeft(N), W)
+    assertEquals(turnLeft(W), S)
+    assertEquals(turnLeft(S), E)
+    assertEquals(turnLeft(E), N)
   }
 }
