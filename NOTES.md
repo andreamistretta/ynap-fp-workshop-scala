@@ -1,0 +1,15 @@
+Random stuff we can do in classroom:
+- Build a Monad in Java
+- API Gateway for microservices (aggregation, rate limit, circuit breaker)
+- Build a web framework like Suave (no HKT) or Http4s (yes HKT and stuff like Kliesli)
+- Make invalid state urepresantable, example to refactor RolloutConfig in CoreExtensions
+- Read our codebases (WharehouseEvents, HeaderEnancher, "CoreExtensions/CanReturnRules") and looking for main flow, monads, typeclasses, etc
+- Let translate togher G. Canti code
+- Read Kotlin-fp or Typescript-fp codebases
+- build a REST Api for Item Inventory (m-r)
+- Test-Driven Development micro-cycle
+- CharacterizationTests w/ GoldenMaster and Scientist
+- TripService refactoring kata
+- FunctionalStructure refactoring kata
+- https://github.com/sandromancuso/twitter-kata-java
+- https://github.com/codurance/task-list
