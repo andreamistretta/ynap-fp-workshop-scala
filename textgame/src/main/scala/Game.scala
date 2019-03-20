@@ -22,17 +22,18 @@ class Game {
     }
 
     case class GameWorld(player: Player, field: Field)
+
+    case class GameExecution(world: GameWorld, exec: Boolean)
   }
 
   object Logic {
 
     val enter = System.getProperty("line.separator")
 
-    var world: GameWorld = null
-
-    def initWorld(): Unit = {
-      world = GameWorld(Player.begin(askName()), Field.mk20x20)
+    def initWorld(): GameWorld = {
+      val world = GameWorld(Player.begin(askName()), Field.mk20x20)
       println("Use commands to play")
+      world
     }
 
     def askName(): String = {
@@ -42,10 +43,13 @@ class Game {
       name
     }
 
-    def gameLoop(): Unit =
-      if(gameStep()) gameLoop()
+    def gameLoop(world: GameWorld): Unit = {
+      val execution = gameStep(world)
+      if (execution.exec)
+        gameLoop(execution.world)
+    }
 
-    def gameStep(): Boolean = {
+    def gameStep(world: GameWorld): GameExecution = {
       val line = readLine()
 
       if (line.length > 0) {
@@ -54,47 +58,51 @@ class Game {
 
           case "help" => {
             printHelp()
-            true
+            GameExecution(world, true)
           }
 
           case "show" => {
-            printWorld()
-            true
+            printWorld(world)
+            GameExecution(world, true)
           }
 
           case "move" => {
-            if (words.length < 2)
+            if (words.length < 2) {
               println("Missing direction")
+              GameExecution(world, true)
+            }
             else {
               try {
                 words(1) match {
-                  case "up"    => move((-1, 0))
-                  case "down"  => move((1, 0))
-                  case "right" => move((0, 1))
-                  case "left"  => move((0, -1))
-                  case _       => println("Unknown direction")
+                  case "up"    => GameExecution(move(world, (-1, 0)), true)
+                  case "down"  => GameExecution(move(world, (1, 0)), true)
+                  case "right" => GameExecution(move(world, (0, 1)), true)
+                  case "left"  => GameExecution(move(world, (0, -1)), true)
+                  case _       =>
+                    println("Unknown direction")
+                    GameExecution(world, true)
                 }
               } catch {
-                case e: Exception => println(e.getMessage)
+                case e: Exception =>
+                  println(e.getMessage)
+                  GameExecution(world, true)
               }
             }
-            true
           }
 
           case "quit" => {
-            printQuit()
-            false
+            printQuit(world.player)
+            GameExecution(world, false)
           }
 
-          case _ => {
+          case _ =>
             println("Unknown command")
-            true
-          }
+            GameExecution(world, true)
         }
-      } else true
+      } else GameExecution(world, true)
     }
 
-    def move(delta: (Int, Int)): Unit = {
+    def move(world: GameWorld, delta: (Int, Int)): GameWorld = {
       val newX = world.player.x + delta._1
       val newY = world.player.y + delta._2
 
@@ -104,14 +112,14 @@ class Game {
           || newX > size
           || newY > size) throw new Exception("Invalid direction")
 
-      world = world.copy(world.player.copy(x = newX, y = newY))
+      world.copy(world.player.copy(x = newX, y = newY))
     }
 
-    def printWorld(): Unit =
-      println(renderWorld)
+    def printWorld(world: GameWorld): Unit =
+      println(renderWorld(world))
 
-    def printQuit(): Unit =
-      println(s"Bye bye ${world.player.name}!")
+    def printQuit(player: Player): Unit =
+      println(s"Bye bye ${player.name}!")
 
     def printHelp(): Unit = {
       val value =
@@ -126,7 +134,7 @@ class Game {
       println(value)
     }
 
-    def renderWorld: String = {
+    def renderWorld(world: GameWorld): String = {
       val x       = world.player.x
       val y       = world.player.y
       val grid    = world.field.grid
@@ -137,7 +145,6 @@ class Game {
   }
 
   def run(): Unit = {
-    initWorld()
-    gameLoop()
+    gameLoop(initWorld())
   }
 }
