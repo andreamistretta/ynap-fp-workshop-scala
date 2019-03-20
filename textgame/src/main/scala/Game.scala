@@ -8,10 +8,12 @@ class Game {
 
   object Domain {
 
-    case class Player(name: String, x: Int, y: Int)
+    case class Position(x: Int, y: Int)
+
+    case class Player(name: String, pos: Position)
 
     object Player {
-      def begin(name: String) = Player(name, 0, 0)
+      def begin(name: String) = Player(name, Position(0, 0))
     }
 
     case class Field(grid: Vector[Vector[String]])
@@ -23,7 +25,7 @@ class Game {
 
     case class GameWorld(player: Player, field: Field)
 
-    case class GameExecution(world: GameWorld, exec: Boolean)
+    case class GameExecution(world: GameWorld, continue: Boolean)
   }
 
   object Logic {
@@ -45,7 +47,7 @@ class Game {
 
     def gameLoop(world: GameWorld): Unit = {
       val execution = gameStep(world)
-      if (execution.exec)
+      if (execution.continue)
         gameLoop(execution.world)
     }
 
@@ -103,8 +105,8 @@ class Game {
     }
 
     def move(world: GameWorld, delta: (Int, Int)): GameWorld = {
-      val newX = world.player.x + delta._1
-      val newY = world.player.y + delta._2
+      val newX = world.player.pos.x + delta._1
+      val newY = world.player.pos.y + delta._2
 
       val size = world.field.grid.size - 1
       if (newX < 0
@@ -112,7 +114,7 @@ class Game {
           || newX > size
           || newY > size) throw new Exception("Invalid direction")
 
-      world.copy(world.player.copy(x = newX, y = newY))
+      world.copy(world.player.copy(pos = Position(newX, newY)))
     }
 
     def printWorld(world: GameWorld): Unit =
@@ -135,8 +137,8 @@ class Game {
     }
 
     def renderWorld(world: GameWorld): String = {
-      val x       = world.player.x
-      val y       = world.player.y
+      val x       = world.player.pos.x
+      val y       = world.player.pos.y
       val grid    = world.field.grid
       val updated = grid.updated(x, grid(x).updated(y, "x"))
 
