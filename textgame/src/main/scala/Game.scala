@@ -43,8 +43,7 @@ class Game {
     }
 
     def gameLoop(): Unit =
-      while (gameStep()) {
-      }
+      if(gameStep()) gameLoop()
 
     def gameStep(): Boolean = {
       val line = readLine()
