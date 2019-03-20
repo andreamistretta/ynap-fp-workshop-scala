@@ -28,7 +28,6 @@ class Game {
 
     val enter = System.getProperty("line.separator")
 
-    var executing        = true
     var world: GameWorld = null
 
     def initWorld(): Unit = {
@@ -44,11 +43,10 @@ class Game {
     }
 
     def gameLoop(): Unit =
-      while (executing) {
-        gameStep()
+      while (gameStep()) {
       }
 
-    def gameStep(): Unit = {
+    def gameStep(): Boolean = {
       val line = readLine()
 
       if (line.length > 0) {
@@ -57,10 +55,12 @@ class Game {
 
           case "help" => {
             printHelp()
+            true
           }
 
           case "show" => {
             printWorld()
+            true
           }
 
           case "move" => {
@@ -79,19 +79,20 @@ class Game {
                 case e: Exception => println(e.getMessage)
               }
             }
+            true
           }
 
           case "quit" => {
             printQuit()
-            executing = false
+            false
           }
 
           case _ => {
             println("Unknown command")
+            true
           }
-
         }
-      }
+      } else true
     }
 
     def move(delta: (Int, Int)): Unit = {
