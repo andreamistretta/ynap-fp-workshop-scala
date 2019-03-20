@@ -2,6 +2,8 @@ package marsroverkata
 
 import minitest._
 
+import scala.util.{Failure, Success, Try}
+
 object MarsRoverKataTests extends SimpleTestSuite {
 
   case class Position(x: Int, y: Int)
@@ -28,12 +30,14 @@ object MarsRoverKataTests extends SimpleTestSuite {
   case object W extends Direction
   case object S extends Direction
 
+  case class InvalidCharException(value: Char) extends RuntimeException(s"invalid character: $value")
+
   def program(input: String, planet: Planet): Planet =
     parse(input)
-      .foldLeft(planet)(execute)
+      .foldLeft(planet)((p, c) => c.map(command => execute(p, command)).getOrElse(p))
 
-  def parse(value: String): List[Command] =
-    value.toLowerCase.map(parse).toList
+  def parse(value: String): List[Try[Command]] =
+    value.toLowerCase.map(parse2).toList
 
   def parse(c: Char): Command = c match {
     case 'f' => F
@@ -42,11 +46,20 @@ object MarsRoverKataTests extends SimpleTestSuite {
     case 'r' => R
   }
 
+  def parse2(c: Char): Try[Command] = c match {
+    case 'f' => Success(F)
+    case 'b' => Success(B)
+    case 'l' => Success(L)
+    case 'r' => Success(R)
+    case _ => Failure(InvalidCharException(c))
+  }
+
   def execute(planet: Planet, cmd: Command): Planet = cmd match {
     case F => ???
     case B => ???
     case L => ???
     case R => turnRight(planet)
+    case _ => ???
   }
 
   def turnRight(planet: Planet): Planet =
@@ -59,5 +72,6 @@ object MarsRoverKataTests extends SimpleTestSuite {
     assertEquals(program("rrr", p), Planet(Size(10, 10), Rover(Position(0, 0), W)))
     assertEquals(program("rrrr", p), Planet(Size(10, 10), Rover(Position(0, 0), N)))
     assertEquals(program("rrrrr", p), Planet(Size(10, 10), Rover(Position(0, 0), E)))
+    assertEquals(program("rrxrrr", p), Planet(Size(10, 10), Rover(Position(0, 0), E)))
   }
 }
