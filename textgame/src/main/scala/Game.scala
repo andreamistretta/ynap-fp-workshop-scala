@@ -8,7 +8,7 @@ class Game {
 
   object Domain {
 
-    case class Player(name: String, var x: Int, var y: Int)
+    case class Player(name: String, x: Int, y: Int)
 
     object Player {
       def begin(name: String) = Player(name, 0, 0)
@@ -104,8 +104,7 @@ class Game {
           || newX > size
           || newY > size) throw new Exception("Invalid direction")
 
-      world.player.x = newX
-      world.player.y = newY
+      world = world.copy(world.player.copy(x = newX, y = newY))
     }
 
     def printWorld(): Unit =
