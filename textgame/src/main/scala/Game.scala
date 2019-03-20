@@ -78,10 +78,10 @@ class Game {
             else {
               try {
                 words(1) match {
-                  case "up"    => GameExecution(move(world, (-1, 0)), Continue(true))
-                  case "down"  => GameExecution(move(world, (1, 0)), Continue(true))
-                  case "right" => GameExecution(move(world, (0, 1)), Continue(true))
-                  case "left"  => GameExecution(move(world, (0, -1)), Continue(true))
+                  case "up"    => GameExecution(move(world, Position(-1, 0)), Continue(true))
+                  case "down"  => GameExecution(move(world, Position(1, 0)), Continue(true))
+                  case "right" => GameExecution(move(world, Position(0, 1)), Continue(true))
+                  case "left"  => GameExecution(move(world, Position(0, -1)), Continue(true))
                   case _       =>
                     println("Unknown direction")
                     GameExecution(world, Continue(true))
@@ -106,9 +106,9 @@ class Game {
       } else GameExecution(world, Continue(true))
     }
 
-    def move(world: GameWorld, delta: (Int, Int)): GameWorld = {
-      val newX = world.player.pos.x + delta._1
-      val newY = world.player.pos.y + delta._2
+    def move(world: GameWorld, delta: Position): GameWorld = {
+      val newX = world.player.pos.x + delta.x
+      val newY = world.player.pos.y + delta.y
 
       val size = world.field.grid.size - 1
       if (newX < 0

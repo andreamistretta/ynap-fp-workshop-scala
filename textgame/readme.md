@@ -2,12 +2,12 @@
 
 ## Refactoring TODO
 - Remove global mutable state
-    - var executing in Game
-    - remove while loop
-    - var(s) x, y in Player
-    - var world in Game
+    - var executing in Game ------ v
+    - remove while loop ------ v
+    - var(s) x, y in Player ------ v
+    - var world in Game ------ v
 - Enforce correctness through types
-    - remove primitive
+    - remove primitive ------ v
     - don't reuse similar types for different needs
     - making illegal states unrepresentable
 - Separate construction from evaluation
