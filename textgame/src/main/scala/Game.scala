@@ -10,6 +10,8 @@ class Game {
 
     case class Position(x: Int, y: Int)
 
+    case class Continue(value: Boolean)
+
     case class Player(name: String, pos: Position)
 
     object Player {
@@ -25,7 +27,7 @@ class Game {
 
     case class GameWorld(player: Player, field: Field)
 
-    case class GameExecution(world: GameWorld, continue: Boolean)
+    case class GameExecution(world: GameWorld, continue: Continue)
   }
 
   object Logic {
@@ -47,7 +49,7 @@ class Game {
 
     def gameLoop(world: GameWorld): Unit = {
       val execution = gameStep(world)
-      if (execution.continue)
+      if (execution.continue.value)
         gameLoop(execution.world)
     }
 
@@ -60,48 +62,48 @@ class Game {
 
           case "help" => {
             printHelp()
-            GameExecution(world, true)
+            GameExecution(world, Continue(true))
           }
 
           case "show" => {
             printWorld(world)
-            GameExecution(world, true)
+            GameExecution(world, Continue(true))
           }
 
           case "move" => {
             if (words.length < 2) {
               println("Missing direction")
-              GameExecution(world, true)
+              GameExecution(world, Continue(true))
             }
             else {
               try {
                 words(1) match {
-                  case "up"    => GameExecution(move(world, (-1, 0)), true)
-                  case "down"  => GameExecution(move(world, (1, 0)), true)
-                  case "right" => GameExecution(move(world, (0, 1)), true)
-                  case "left"  => GameExecution(move(world, (0, -1)), true)
+                  case "up"    => GameExecution(move(world, (-1, 0)), Continue(true))
+                  case "down"  => GameExecution(move(world, (1, 0)), Continue(true))
+                  case "right" => GameExecution(move(world, (0, 1)), Continue(true))
+                  case "left"  => GameExecution(move(world, (0, -1)), Continue(true))
                   case _       =>
                     println("Unknown direction")
-                    GameExecution(world, true)
+                    GameExecution(world, Continue(true))
                 }
               } catch {
                 case e: Exception =>
                   println(e.getMessage)
-                  GameExecution(world, true)
+                  GameExecution(world, Continue(true))
               }
             }
           }
 
           case "quit" => {
             printQuit(world.player)
-            GameExecution(world, false)
+            GameExecution(world, Continue(false))
           }
 
           case _ =>
             println("Unknown command")
-            GameExecution(world, true)
+            GameExecution(world, Continue(true))
         }
-      } else GameExecution(world, true)
+      } else GameExecution(world, Continue(true))
     }
 
     def move(world: GameWorld, delta: (Int, Int)): GameWorld = {
