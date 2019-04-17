@@ -8,10 +8,10 @@
     - var world in Game ------ v
 - Enforce correctness through types
     - remove primitive ------ v
-    - don't reuse similar types for different needs
-    - making illegal states unrepresentable
+    - don't reuse similar types for different needs ------ v
+    - making illegal states unrepresentable ------ v
 - Separate construction from evaluation
-    - split understand command from apply them (app. input)
+    - split understand command from apply them (app. input) ------ v
     - split render sate from actual println (app. output)
     - where possible eliminate/centralize side-effects
 - Remove throws
